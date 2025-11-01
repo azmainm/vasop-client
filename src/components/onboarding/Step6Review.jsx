@@ -337,7 +337,7 @@ export function Step6Review({
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="bg-zinc-900 hover:bg-zinc-800"
+            className="bg-zinc-900 hover:bg-zinc-800 text-zinc-100"
           >
             {isSubmitting ? "Submitting..." : "Submit for Review →"}
           </Button>

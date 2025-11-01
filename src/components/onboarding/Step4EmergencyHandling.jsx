@@ -13,36 +13,18 @@ import { Toggle } from "@/components/ui/toggle";
 const emergencyHandlingSchema = z.object({
   enabled: z.boolean(),
   forwardToNumber: z.string().optional(),
-  triggerMethod: z.enum(["pound_key", "keyword"]).optional(),
 }).refine(
   (data) => {
     if (data.enabled) {
-      return data.forwardToNumber && data.forwardToNumber.length >= 10 && data.triggerMethod;
+      return data.forwardToNumber && data.forwardToNumber.length >= 10;
     }
     return true;
   },
   {
-    message: "Phone number and trigger method are required when emergency forwarding is enabled",
+    message: "Phone number is required when emergency forwarding is enabled",
     path: ["forwardToNumber"],
   }
 );
-
-const triggerMethods = [
-  {
-    value: "pound_key",
-    label: "Press # Key",
-    badge: "Recommended",
-    description: "Customer hears: \"If this is an emergency, press the pound key now.\"",
-    benefits: ["Clear and simple", "Works for all callers"],
-  },
-  {
-    value: "keyword",
-    label: "Say \"Emergency\"",
-    description: "AI detects keywords like \"emergency\", \"urgent\", or \"help now\" and forwards call.",
-    benefits: [],
-    warning: "May have false triggers",
-  },
-];
 
 export function Step4EmergencyHandling({ data, businessData, voiceAgentData, onNext, onBack, onSave }) {
   const {
@@ -56,16 +38,19 @@ export function Step4EmergencyHandling({ data, businessData, voiceAgentData, onN
     defaultValues: data || {
       enabled: false,
       forwardToNumber: "",
-      triggerMethod: "pound_key",
     },
   });
 
   const enabled = watch("enabled");
   const forwardToNumber = watch("forwardToNumber");
-  const triggerMethod = watch("triggerMethod");
 
   const onSubmit = (formData) => {
-    onNext(formData);
+    // Always set triggerMethod to pound_key
+    const dataWithTrigger = {
+      ...formData,
+      triggerMethod: formData.enabled ? "pound_key" : null,
+    };
+    onNext(dataWithTrigger);
   };
 
   const businessName = businessData?.businessName || "Your Business";
@@ -139,7 +124,7 @@ export function Step4EmergencyHandling({ data, businessData, voiceAgentData, onN
                     id="forwardToNumber"
                     type="tel"
                     placeholder="(555) 123-4567"
-                    className="pl-10"
+                    className="pl-10 placeholder:text-zinc-400"
                     {...register("forwardToNumber")}
                   />
                 </div>
@@ -152,84 +137,39 @@ export function Step4EmergencyHandling({ data, businessData, voiceAgentData, onN
               </div>
             </Card>
 
-            {/* Trigger Method */}
-            <Card className="p-6 space-y-4">
-              <div className="space-y-3">
-                <Label>
-                  How Should Customers Trigger Emergency Forwarding? <span className="text-red-500">*</span>
-                </Label>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {triggerMethods.map((method) => (
-                    <label
-                      key={method.value}
-                      className={`
-                        relative flex flex-col p-4 border-2 rounded-lg cursor-pointer transition-all
-                        ${triggerMethod === method.value
-                          ? "border-zinc-900 bg-zinc-50"
-                          : "border-zinc-300 hover:border-zinc-400"
-                        }
-                      `}
-                    >
-                      <input
-                        type="radio"
-                        value={method.value}
-                        {...register("triggerMethod")}
-                        className="sr-only"
-                      />
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <div
-                            className={`
-                              w-5 h-5 rounded-full border-2 flex items-center justify-center
-                              ${triggerMethod === method.value
-                                ? "border-zinc-900"
-                                : "border-zinc-300"
-                              }
-                            `}
-                          >
-                            {triggerMethod === method.value && (
-                              <div className="w-3 h-3 rounded-full bg-zinc-900" />
-                            )}
-                          </div>
-                          <span className="font-semibold text-zinc-900">
-                            {method.label}
-                          </span>
-                        </div>
-                        {method.badge && (
-                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                            {method.badge}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-zinc-600 mb-3">
-                        {method.description}
+            {/* How It Works Info */}
+            <Card className="p-6 space-y-4 bg-blue-50 border-blue-200">
+              <div className="flex gap-3">
+                <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-semibold text-blue-900 mb-2">
+                    How Emergency Forwarding Works
+                  </h4>
+                  <div className="space-y-2 text-sm text-blue-800">
+                    <p>
+                      <strong>Customers will hear:</strong> "If this is an emergency, press the pound key now."
+                    </p>
+                    <p>
+                      <strong>When they press #:</strong> The call is immediately forwarded to your emergency contact number.
+                    </p>
+                    <div className="mt-3 space-y-1">
+                      <p className="text-xs text-blue-700 flex items-center gap-1">
+                        <span>✓</span> Clear and simple for callers
                       </p>
-                      {method.benefits.length > 0 && (
-                        <div className="space-y-1">
-                          {method.benefits.map((benefit, i) => (
-                            <p key={i} className="text-xs text-green-700 flex items-center gap-1">
-                              <span>✓</span> {benefit}
-                            </p>
-                          ))}
-                        </div>
-                      )}
-                      {method.warning && (
-                        <p className="text-xs text-amber-700 flex items-center gap-1 mt-2">
-                          <AlertCircle className="h-3 w-3" /> {method.warning}
-                        </p>
-                      )}
-                    </label>
-                  ))}
+                      <p className="text-xs text-blue-700 flex items-center gap-1">
+                        <span>✓</span> Works for all callers
+                      </p>
+                      <p className="text-xs text-blue-700 flex items-center gap-1">
+                        <span>✓</span> No false triggers
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                {errors.triggerMethod && (
-                  <p className="text-sm text-red-500">{errors.triggerMethod.message}</p>
-                )}
               </div>
             </Card>
 
             {/* Preview */}
-            {forwardToNumber && triggerMethod && (
+            {forwardToNumber && (
               <Card className="p-6 bg-zinc-50 border-zinc-300 animate-fade-in">
                 <div className="flex items-start gap-3 mb-3">
                   <Phone className="h-5 w-5 text-zinc-700 flex-shrink-0 mt-0.5" />
@@ -242,18 +182,11 @@ export function Step4EmergencyHandling({ data, businessData, voiceAgentData, onN
                     </p>
                     <div className="bg-white border border-zinc-300 rounded-lg p-4 mb-3">
                       <p className="text-zinc-900 italic">
-                        "Thanks for calling {businessName}, I'm {agentName}. 
-                        {triggerMethod === "pound_key" 
-                          ? " If this is an emergency, press the pound key now to speak with someone immediately."
-                          : " If this is an emergency, please let me know and I'll connect you immediately."
-                        }"
+                        "Hi there, I'm {agentName}, {businessName}'s virtual assistant. If this is an emergency, press the pound key now to speak with someone immediately."
                       </p>
                     </div>
                     <p className="text-sm text-zinc-700">
-                      {triggerMethod === "pound_key" 
-                        ? `If they press #, the call forwards to ${forwardToNumber}`
-                        : `If they say "emergency" or similar keywords, the call forwards to ${forwardToNumber}`
-                      }
+                      If they press #, the call forwards to {forwardToNumber}
                     </p>
                   </div>
                 </div>
@@ -279,7 +212,7 @@ export function Step4EmergencyHandling({ data, businessData, voiceAgentData, onN
             >
               Save & Continue Later
             </Button>
-            <Button type="submit" className="bg-zinc-900 hover:bg-zinc-800">
+            <Button type="submit" className="bg-zinc-900 hover:bg-zinc-800 text-zinc-100">
               Continue to Step 5 →
             </Button>
           </div>

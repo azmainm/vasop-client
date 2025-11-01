@@ -55,8 +55,8 @@ export function Step5EmailConfig({ data, onNext, onBack, onSave }) {
               <Input
                 id="recipientEmail"
                 type="email"
-                placeholder="joe@joeshvac.com"
-                className="pl-10"
+                placeholder="contact@4trades.ai"
+                className="pl-10 placeholder:text-zinc-400"
                 {...register("recipientEmail")}
               />
             </div>
@@ -73,10 +73,7 @@ export function Step5EmailConfig({ data, onNext, onBack, onSave }) {
             <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm font-medium text-zinc-900">
-                Email summaries are enabled
-              </p>
-              <p className="text-xs text-zinc-600">
-                Always enabled for MVP1
+                Email summaries are always enabled
               </p>
             </div>
           </div>
@@ -93,7 +90,7 @@ export function Step5EmailConfig({ data, onNext, onBack, onSave }) {
               
               <div className="bg-white border border-zinc-300 rounded-lg p-4 mb-3">
                 <p className="text-sm font-semibold text-zinc-900 mb-2">
-                  Subject: New Call - [Customer Name] - [Date/Time]
+                  Subject: New Call - [Customer Name]
                 </p>
               </div>
 
@@ -105,8 +102,6 @@ export function Step5EmailConfig({ data, onNext, onBack, onSave }) {
                     "Reason for their call",
                     "All details they provided",
                     "Urgency level (if collected)",
-                    "Conversation transcript",
-                    "Timestamp of call",
                   ].map((item, i) => (
                     <li key={i} className="text-sm text-zinc-700 flex items-center gap-2">
                       <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
@@ -136,7 +131,7 @@ export function Step5EmailConfig({ data, onNext, onBack, onSave }) {
             >
               Save & Continue Later
             </Button>
-            <Button type="submit" className="bg-zinc-900 hover:bg-zinc-800">
+            <Button type="submit" className="bg-zinc-900 hover:bg-zinc-800 text-zinc-100">
               Continue to Step 6 →
             </Button>
           </div>

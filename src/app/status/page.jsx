@@ -171,7 +171,7 @@ export default function StatusPage() {
                 <div className="w-6 h-6 bg-blue-200 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="text-xs font-semibold">3</span>
                 </div>
-                <p>You'll receive your dedicated phone number and setup instructions</p>
+                <p>We will notify you when your voice agent is ready</p>
               </div>
               <div className="flex items-start gap-2">
                 <div className="w-6 h-6 bg-blue-200 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">

@@ -85,7 +85,8 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
             </Label>
             <Input
               id="businessName"
-              placeholder="Joe's HVAC"
+              placeholder="4Trades"
+              className="placeholder:text-zinc-400"
               {...register("businessName")}
             />
             {errors.businessName && (
@@ -125,7 +126,8 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
             <Input
               id="website"
               type="url"
-              placeholder="www.yourbusiness.com"
+              placeholder="www.4trades.ai"
+              className="placeholder:text-zinc-400"
               {...register("website")}
             />
             {errors.website && (
@@ -144,6 +146,7 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
               id="phone"
               type="tel"
               placeholder="(555) 123-4567"
+              className="placeholder:text-zinc-400"
               {...register("phone")}
             />
             {errors.phone && (
@@ -161,7 +164,8 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
             <Input
               id="email"
               type="email"
-              placeholder="contact@yourbusiness.com"
+              placeholder="contact@4trades.ai"
+              className="placeholder:text-zinc-400"
               {...register("email")}
             />
             {errors.email && (
@@ -186,6 +190,7 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
             <Input
               id="street"
               placeholder="123 Main Street"
+              className="placeholder:text-zinc-400"
               {...register("address.street")}
             />
             {errors.address?.street && (
@@ -201,6 +206,7 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
               <Input
                 id="city"
                 placeholder="Portland"
+                className="placeholder:text-zinc-400"
                 {...register("address.city")}
               />
               {errors.address?.city && (
@@ -215,6 +221,7 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
               <Input
                 id="zip"
                 placeholder="97201"
+                className="placeholder:text-zinc-400"
                 {...register("address.zip")}
               />
               {errors.address?.zip && (
@@ -261,6 +268,7 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
             <Input
               id="mondayFriday"
               placeholder="8 AM - 6 PM"
+              className="placeholder:text-zinc-400"
               {...register("hours.mondayFriday")}
             />
             {errors.hours?.mondayFriday && (
@@ -276,6 +284,7 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
             <Input
               id="saturday"
               placeholder="9 AM - 4 PM or Closed"
+              className="placeholder:text-zinc-400"
               {...register("hours.saturday")}
             />
             {errors.hours?.saturday && (
@@ -293,6 +302,7 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
             <Input
               id="sunday"
               placeholder="Closed"
+              className="placeholder:text-zinc-400"
               {...register("hours.sunday")}
             />
             {errors.hours?.sunday && (
@@ -313,7 +323,7 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
           >
             Save & Continue Later
           </Button>
-          <Button type="submit" className="bg-zinc-900 hover:bg-zinc-800">
+          <Button type="submit" className="bg-zinc-900 hover:bg-zinc-800 text-zinc-100">
             Continue to Step 2 →
           </Button>
         </div>

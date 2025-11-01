@@ -64,14 +64,7 @@ export function Step2VoiceAgent({ data, businessData, onNext, onBack, onSave }) 
       const businessName = businessData?.businessName || "Your Business";
       const name = agentName || "the AI assistant";
       
-      let greetingTemplate = "";
-      if (selectedPersonality === "professional") {
-        greetingTemplate = `Thanks for calling ${businessName}, I'm ${name}, your AI assistant. How can I help you today?`;
-      } else if (selectedPersonality === "friendly") {
-        greetingTemplate = `Hi there! Thanks for calling ${businessName}. I'm ${name}, and I'm here to help. What can I do for you?`;
-      } else {
-        greetingTemplate = `Good day. You've reached ${businessName}. This is ${name}, your virtual assistant. How may I assist you?`;
-      }
+      const greetingTemplate = `Hi there, I'm ${name}, ${businessName}'s virtual assistant. Parts of this call may be recorded so we can better understand your needs and improve our service. To get started, what are you calling about today?`;
       
       setValue("greeting", greetingTemplate);
       toast.success("Greeting generated! Feel free to customize it");
@@ -110,6 +103,7 @@ export function Step2VoiceAgent({ data, businessData, onNext, onBack, onSave }) 
                 <Input
                   id="agentName"
                   placeholder="Alex"
+                  className="placeholder:text-zinc-400"
                   {...register("agentName")}
                 />
                 {errors.agentName && (
@@ -190,7 +184,8 @@ export function Step2VoiceAgent({ data, businessData, onNext, onBack, onSave }) 
             <Textarea
               id="greeting"
               rows={4}
-              placeholder="Thanks for calling [Business Name], I'm [Agent Name], the AI assistant..."
+              placeholder="Hi there, I'm [Agent Name], [Business Name]'s virtual assistant..."
+              className="placeholder:text-zinc-400"
               {...register("greeting")}
             />
             {errors.greeting && (
@@ -248,7 +243,7 @@ export function Step2VoiceAgent({ data, businessData, onNext, onBack, onSave }) 
             >
               Save & Continue Later
             </Button>
-            <Button type="submit" className="bg-zinc-900 hover:bg-zinc-800">
+            <Button type="submit" className="bg-zinc-900 hover:bg-zinc-800 text-zinc-100">
               Continue to Step 3 →
             </Button>
           </div>

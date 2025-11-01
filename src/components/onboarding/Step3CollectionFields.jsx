@@ -247,7 +247,8 @@ export function Step3CollectionFields({ data, onNext, onBack, onSave }) {
                         </Label>
                         <Input
                           id={`question-${index}`}
-                          placeholder="e.g., What type of HVAC system do you have?"
+                          placeholder="e.g., What type of fence are you interested in?"
+                          className="placeholder:text-zinc-400"
                           {...register(`customFields.${index}.question`)}
                         />
                         {errors.customFields?.[index]?.question && (
@@ -320,7 +321,7 @@ export function Step3CollectionFields({ data, onNext, onBack, onSave }) {
             >
               Save & Continue Later
             </Button>
-            <Button type="submit" className="bg-zinc-900 hover:bg-zinc-800">
+            <Button type="submit" className="bg-zinc-900 hover:bg-zinc-800 text-zinc-100">
               Continue to Step 4 →
             </Button>
           </div>
