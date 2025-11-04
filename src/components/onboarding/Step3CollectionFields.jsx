@@ -317,7 +317,10 @@ export function Step3CollectionFields({ data, onNext, onBack, onSave }) {
             <Button
               type="button"
               variant="outline"
-              onClick={() => onSave(handleSubmit((data) => data)())}
+              onClick={() => {
+                const data = watch();
+                onSave(data);
+              }}
             >
               Save & Continue Later
             </Button>

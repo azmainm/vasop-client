@@ -36,17 +36,14 @@ export default function LoginPage() {
   const onSubmit = async (data) => {
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    const result = await login(data);
     
-    // For now, just accept any valid email/password
-    login({
-      email: data.email,
-      name: data.email.split("@")[0],
-    });
-    
-    toast.success("Welcome back!");
-    router.push("/onboarding");
+    if (result.success) {
+      toast.success("Welcome back!");
+      router.push("/onboarding");
+    } else {
+      toast.error(result.error || "Login failed. Please try again.");
+    }
     
     setIsLoading(false);
   };

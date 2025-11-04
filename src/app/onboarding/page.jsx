@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { onboardingAPI } from "@/lib/api";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProgressIndicator } from "@/components/onboarding/ProgressIndicator";
@@ -32,27 +33,62 @@ export default function OnboardingPage() {
       return;
     }
 
-    // Load saved draft from localStorage
-    const savedDraft = localStorage.getItem("vasop-onboarding-draft");
-    if (savedDraft) {
+    // Load saved draft from server
+    const loadDraft = async () => {
       try {
-        const draft = JSON.parse(savedDraft);
-        setFormData(draft.data);
-        setCurrentStep(draft.currentStep);
+        const result = await onboardingAPI.getMySubmission();
+        
+        // Check if result has submission property (not empty object)
+        if (result && result.submission && Object.keys(result.submission).length > 0) {
+          const submission = result.submission;
+          
+          // Check if already submitted
+          if (submission.isSubmitted) {
+            router.push("/status");
+            return;
+          }
+          
+          // Load draft data
+          setFormData({
+            businessProfile: submission.businessProfile || null,
+            voiceAgent: submission.voiceAgentConfig || null,
+            collectionFields: submission.voiceAgentConfig?.collectionFields || null,
+            emergencyHandling: submission.voiceAgentConfig?.emergencyHandling || null,
+            emailConfig: submission.emailConfig || null,
+          });
+          setCurrentStep(submission.currentStep || 1);
+        }
+        // If no submission found, start fresh from step 1
       } catch (error) {
         console.error("Failed to load draft:", error);
+        // On error, just start fresh from step 1
       }
-    }
+    };
+
+    loadDraft();
   }, [user, router]);
 
-  const saveDraft = (data, step) => {
-    const draft = {
-      data,
-      currentStep: step,
-      lastSavedAt: new Date().toISOString(),
-    };
-    localStorage.setItem("vasop-onboarding-draft", JSON.stringify(draft));
-    toast.success("Progress saved!");
+  const saveDraft = async (data, step) => {
+    try {
+      const payload = {
+        currentStep: step,
+        businessProfile: data.businessProfile,
+        voiceAgentConfig: {
+          agentName: data.voiceAgent?.agentName,
+          agentPersonality: data.voiceAgent?.agentPersonality,
+          greeting: data.voiceAgent?.greeting,
+        },
+        collectionFields: data.collectionFields,
+        emergencyHandling: data.emergencyHandling,
+        emailConfig: data.emailConfig,
+      };
+      
+      await onboardingAPI.saveProgress(payload);
+      toast.success("Progress saved!");
+    } catch (error) {
+      console.error("Failed to save draft:", error);
+      toast.error("Failed to save progress. Please try again.");
+    }
   };
 
   const handleNext = (stepData, stepNumber) => {
@@ -87,7 +123,7 @@ export default function OnboardingPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleSave = (stepData, stepNumber) => {
+  const handleSave = async (stepData, stepNumber) => {
     const updatedData = { ...formData };
     
     switch (stepNumber) {
@@ -109,7 +145,10 @@ export default function OnboardingPage() {
     }
     
     setFormData(updatedData);
-    saveDraft(updatedData, stepNumber);
+    await saveDraft(updatedData, stepNumber);
+    
+    // Redirect to progress page
+    router.push("/progress");
   };
 
   const handleStepClick = (step) => {
@@ -120,25 +159,35 @@ export default function OnboardingPage() {
   };
 
   const handleSubmit = async () => {
-    // Simulate submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    // Clear draft
-    localStorage.removeItem("vasop-onboarding-draft");
-    
-    // Store submission
-    const submission = {
-      ...formData,
-      submittedAt: new Date().toISOString(),
-      submissionId: `4t-${Math.random().toString(36).substring(2, 5).toUpperCase()}-${new Date().toISOString().split('T')[0]}`,
-    };
-    localStorage.setItem("vasop-submission", JSON.stringify(submission));
-    
-    toast.success("Your information has been successfully submitted. Admin will review and contact you soon.");
-    
-    setTimeout(() => {
-      router.push("/status");
-    }, 2000);
+    try {
+      const payload = {
+        businessProfile: formData.businessProfile,
+        voiceAgentConfig: {
+          agentName: formData.voiceAgent?.agentName,
+          agentPersonality: formData.voiceAgent?.agentPersonality,
+          greeting: formData.voiceAgent?.greeting,
+          collectionFields: formData.collectionFields,
+          emergencyHandling: formData.emergencyHandling,
+        },
+        emailConfig: formData.emailConfig,
+      };
+      
+      const result = await onboardingAPI.submit(payload);
+      
+      if (result.success) {
+        localStorage.removeItem("vasop-onboarding-draft");
+        toast.success(result.message || "Your information has been successfully submitted!");
+        
+        setTimeout(() => {
+          router.push("/status");
+        }, 2000);
+      } else {
+        toast.error("Failed to submit. Please try again.");
+      }
+    } catch (error) {
+      console.error("Failed to submit:", error);
+      toast.error("Failed to submit. Please try again.");
+    }
   };
 
   const handleLogout = () => {

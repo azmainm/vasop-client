@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { onboardingAPI } from "@/lib/api";
 import { Clock, Copy, CheckCircle, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -20,20 +21,23 @@ export default function StatusPage() {
       return;
     }
 
-    // Load submission from localStorage
-    const savedSubmission = localStorage.getItem("vasop-submission");
-    if (!savedSubmission) {
-      // No submission found, redirect to onboarding
-      router.push("/onboarding");
-      return;
-    }
+    // Load submission from server
+    const loadSubmission = async () => {
+      try {
+        const result = await onboardingAPI.getMySubmission();
+        if (!result || !result.submission || !result.submission.isSubmitted) {
+          // No submitted application found, redirect to onboarding
+          router.push("/onboarding");
+          return;
+        }
+        setSubmission(result.submission);
+      } catch (error) {
+        console.error("Failed to load submission:", error);
+        router.push("/onboarding");
+      }
+    };
 
-    try {
-      setSubmission(JSON.parse(savedSubmission));
-    } catch (error) {
-      console.error("Failed to load submission:", error);
-      router.push("/onboarding");
-    }
+    loadSubmission();
   }, [user, router]);
 
   const handleCopyId = () => {

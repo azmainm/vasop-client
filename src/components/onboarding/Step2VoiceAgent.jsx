@@ -239,7 +239,10 @@ export function Step2VoiceAgent({ data, businessData, onNext, onBack, onSave }) 
             <Button
               type="button"
               variant="outline"
-              onClick={() => onSave(handleSubmit((data) => data)())}
+              onClick={() => {
+                const data = watch();
+                onSave(data);
+              }}
             >
               Save & Continue Later
             </Button>

@@ -42,14 +42,14 @@ export default function SignupPage() {
   const onSubmit = async (data) => {
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const result = await signup(data);
     
-    // Create user account
-    signup(data);
-    
-    toast.success("Account created successfully!");
-    router.push("/onboarding");
+    if (result.success) {
+      toast.success("Account created successfully!");
+      router.push("/onboarding");
+    } else {
+      toast.error(result.error || "Signup failed. Please try again.");
+    }
     
     setIsLoading(false);
   };

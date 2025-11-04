@@ -17,6 +17,7 @@ export function Step5EmailConfig({ data, onNext, onBack, onSave }) {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(emailConfigSchema),
@@ -127,7 +128,10 @@ export function Step5EmailConfig({ data, onNext, onBack, onSave }) {
             <Button
               type="button"
               variant="outline"
-              onClick={() => onSave(handleSubmit((data) => data)())}
+              onClick={() => {
+                const data = getValues();
+                onSave(data);
+              }}
             >
               Save & Continue Later
             </Button>

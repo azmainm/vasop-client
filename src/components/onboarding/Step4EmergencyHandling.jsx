@@ -137,61 +137,8 @@ export function Step4EmergencyHandling({ data, businessData, voiceAgentData, onN
               </div>
             </Card>
 
-            {/* How It Works Info */}
-            <Card className="p-6 space-y-4 bg-blue-50 border-blue-200">
-              <div className="flex gap-3">
-                <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-semibold text-blue-900 mb-2">
-                    How Emergency Forwarding Works
-                  </h4>
-                  <div className="space-y-2 text-sm text-blue-800">
-                    <p>
-                      <strong>Customers will hear:</strong> "If this is an emergency, press the pound key now."
-                    </p>
-                    <p>
-                      <strong>When they press #:</strong> The call is immediately forwarded to your emergency contact number.
-                    </p>
-                    <div className="mt-3 space-y-1">
-                      <p className="text-xs text-blue-700 flex items-center gap-1">
-                        <span>✓</span> Clear and simple for callers
-                      </p>
-                      <p className="text-xs text-blue-700 flex items-center gap-1">
-                        <span>✓</span> Works for all callers
-                      </p>
-                      <p className="text-xs text-blue-700 flex items-center gap-1">
-                        <span>✓</span> No false triggers
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Card>
-
             {/* Preview */}
-            {forwardToNumber && (
-              <Card className="p-6 bg-zinc-50 border-zinc-300 animate-fade-in">
-                <div className="flex items-start gap-3 mb-3">
-                  <Phone className="h-5 w-5 text-zinc-700 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-semibold text-zinc-900 mb-2">
-                      How it will work:
-                    </h4>
-                    <p className="text-sm text-zinc-700 mb-3">
-                      When a customer calls, they'll hear:
-                    </p>
-                    <div className="bg-white border border-zinc-300 rounded-lg p-4 mb-3">
-                      <p className="text-zinc-900 italic">
-                        "Hi there, I'm {agentName}, {businessName}'s virtual assistant. If this is an emergency, press the pound key now to speak with someone immediately."
-                      </p>
-                    </div>
-                    <p className="text-sm text-zinc-700">
-                      If they press #, the call forwards to {forwardToNumber}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            )}
+           
           </div>
         )}
 
@@ -208,7 +155,10 @@ export function Step4EmergencyHandling({ data, businessData, voiceAgentData, onN
             <Button
               type="button"
               variant="outline"
-              onClick={() => onSave(handleSubmit((data) => data)())}
+              onClick={() => {
+                const data = watch();
+                onSave(data);
+              }}
             >
               Save & Continue Later
             </Button>

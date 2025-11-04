@@ -51,6 +51,7 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(businessProfileSchema),
@@ -319,7 +320,10 @@ export function Step1BusinessProfile({ data, onNext, onSave }) {
           <Button
             type="button"
             variant="outline"
-            onClick={() => onSave(handleSubmit((data) => data)())}
+            onClick={() => {
+              const data = getValues();
+              onSave(data);
+            }}
           >
             Save & Continue Later
           </Button>
